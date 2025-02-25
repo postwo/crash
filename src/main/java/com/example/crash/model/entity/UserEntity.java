@@ -4,17 +4,24 @@ import com.example.crash.model.user.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table( //"user" 이렇게 작성하는 이유는 user는 데이터베이스에 예약어이기 때문에 이렇게 작성
-        name="\"user\""
+        name="\"user\"",
+        indexes = { // username 을 자주 호출할거여서 이렇게 인덱스 생성 , 그리고 이렇게 유니크를 걸으므로 db에서 중복을 방지 가능
+                @Index(name="user_username_idx",columnList = "username" ,unique = true)
+        }
 )
 @Setter
 @Getter
-public class UserEntity  {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +64,43 @@ public class UserEntity  {
     public int hashCode() {
         return Objects.hash(userId, username, password, name, email, role, createdDateTime);
     }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 
     //userentity 로 변환
     public static UserEntity of(String username, String password, String name, String email) {
