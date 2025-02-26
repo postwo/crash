@@ -61,6 +61,8 @@ public class WebConfiguration {
                 .csrf(CsrfConfigurer::disable) //csrf 설정 필요없다 그러므로 꺼준다
 
                 //jwtAuthenticationFilter 를 시큐리티 필터에 등록
+                // addFilterBefore를 사용한 이유는 jwtAuthenticationFilter에 작업이 끝나면
+                // jwtAuthenticationFilter에 있는 작업이 끝나면 filterChain.doFilter(request,response); 를 통해 다음 필터인 UsernamePasswordAuthenticationFilter.class를 실행시킨다
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //jwtAuthenticationFilter가 UsernamePasswordAuthenticationFilter.class) 보다 먼저 실행된다
                 .addFilterBefore(jwtExceptionFilter, jwtAuthenticationFilter.getClass()) //jwtExceptionFilter가 jwtAuthenticationFilter.getClass() 보다 먼저 실행된다
                 .httpBasic(HttpBasicConfigurer::disable); // 시큐리티에서 기본적으로 활성화시켜주는 basic도 꺼준다
