@@ -1,5 +1,6 @@
 package com.example.crash.exception;
 
+import com.example.crash.model.error.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,12 +17,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class) //RuntimeException 이발생할 때 여기서 가로챈다
-    public ResponseEntity<ClientErrorException> handlerRuntimeException(RuntimeException e){
+    public ResponseEntity<ErrorResponse> handlerRuntimeException(RuntimeException e){
         return ResponseEntity.internalServerError().build();
     }
 
     @ExceptionHandler(Exception.class) //Exception 이발생할 때 여기서 가로챈다
-    public ResponseEntity<ClientErrorException> handlerException(Exception e){
+    public ResponseEntity<ErrorResponse> handlerException(Exception e){
         return ResponseEntity.internalServerError().build();
     }
 }
