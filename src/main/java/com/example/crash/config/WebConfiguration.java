@@ -22,6 +22,9 @@ public class WebConfiguration {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Autowired
+    private JwtExceptionFilter jwtExceptionFilter;
+
     //CORS 설정: configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000"));는 http://localhost:3000과 http://127.0.0.1:3000에서 오는 요청을 허용합니다.
     //목적: 이렇게 설정하면, 이 두 페이지에서 http://localhost:8080 백엔드 서버에 접근하여 요청을 보낼 수 있게 됩니다
     @Bean
@@ -56,7 +59,10 @@ public class WebConfiguration {
                 .sessionManagement( //RESTful API에서는 보통 세션을 생성하지 않는 것이 일반적 , 세션 생성 x
                         (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(CsrfConfigurer::disable) //csrf 설정 필요없다 그러므로 꺼준다
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //지정된 필터가 다른 특정 필터보다 먼저 실행되도록 한디
+
+                //jwtAuthenticationFilter 를 시큐리티 필터에 등록
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //jwtAuthenticationFilter가 UsernamePasswordAuthenticationFilter.class) 보다 먼저 실행된다
+                .addFilterBefore(jwtExceptionFilter, jwtAuthenticationFilter.getClass()) //jwtExceptionFilter가 jwtAuthenticationFilter.getClass() 보다 먼저 실행된다
                 .httpBasic(HttpBasicConfigurer::disable); // 시큐리티에서 기본적으로 활성화시켜주는 basic도 꺼준다
 
         return http.build();
