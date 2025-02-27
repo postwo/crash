@@ -54,6 +54,7 @@ public class JwtService {
                     .verifyWith(key) // key값으로 먼저 검증 ,서명은 JWT 토큰의 헤더(header)와 페이로드(payload)에 대한 해시 값입니다.이 해시 값은 서버의 비밀 키(secret key)로 서명되어 있다
                     .build()
                     // 사용자 이름(subject)을 추출하여 해당 사용자를 식별
+                    //클레임(claims)을 추출한다는 것은 JWT 토큰의 서명을 검증하고, 클레임을 파싱하는 과정에서 사용되는 서명 키를 의미
                     .parseSignedClaims(token)
                     .getPayload()
                     .getSubject();
