@@ -3,6 +3,7 @@ package com.example.crash.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -53,9 +54,10 @@ public class WebConfiguration {
                 .authorizeHttpRequests(
                         (requests) ->
                                 requests
+                                        .requestMatchers(HttpMethod.POST, "/api/*/users", "/api/*/users/authenticate")
+                                        .permitAll() // 위 두군데 한해서만 모든 사용자가 사요할 수 있게 허용해준다는의미이다
                                         .anyRequest()
-                                        .permitAll()
-
+                                        .authenticated()
                                         )
                 .sessionManagement( //RESTful API에서는 보통 세션을 생성하지 않는 것이 일반적 , 세션 생성 x
                         (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
