@@ -4,6 +4,8 @@ import com.example.crash.exception.user.UserAlreadyExistsException;
 import com.example.crash.exception.user.UserNotFoundException;
 import com.example.crash.model.entity.UserEntity;
 import com.example.crash.model.user.User;
+import com.example.crash.model.user.UserAuthenticationResponse;
+import com.example.crash.model.user.UserLoginRequestBody;
 import com.example.crash.model.user.UserSignUpRequestBody;
 import com.example.crash.repository.UserEntityRepository;
 import jakarta.validation.Valid;
@@ -22,10 +24,11 @@ public class UserService implements UserDetailsService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
+    private final JwtService jwtService;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userEntityRepository.findByUsername(username)
-                .orElseThrow(() ->new UserNotFoundException(username));
+        return getUserEntityByUsername(username);
     }
 
     // 회원가입
@@ -50,5 +53,24 @@ public class UserService implements UserDetailsService {
                                 userSignUpRequestBody.email()));
 
         return User.from(userEntity);
+    }
+
+    //로그인
+    public UserAuthenticationResponse authenticate(@Valid UserLoginRequestBody userLoginRequestBody) {
+
+        var userEntity = getUserEntityByUsername(userLoginRequestBody.username());
+
+        if (passwordEncoder.matches(userLoginRequestBody.password(), userEntity.getPassword())) {
+            var accessToken = jwtService.generateAccessToken(userEntity); // 토큰 생성
+            return new UserAuthenticationResponse(accessToken);
+        } else {
+            throw new UserNotFoundException();
+        }
+    }
+
+    // 자주 사용하기 때문에 예외처리는 이렇게 분리
+    private UserEntity getUserEntityByUsername(String username) {
+        return userEntityRepository.findByUsername(username)
+                .orElseThrow(()-> new UserNotFoundException(username));
     }
 }

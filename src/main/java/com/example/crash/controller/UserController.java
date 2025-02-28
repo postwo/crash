@@ -1,6 +1,8 @@
 package com.example.crash.controller;
 
 import com.example.crash.model.user.User;
+import com.example.crash.model.user.UserAuthenticationResponse;
+import com.example.crash.model.user.UserLoginRequestBody;
 import com.example.crash.model.user.UserSignUpRequestBody;
 import com.example.crash.service.UserService;
 import jakarta.validation.Valid;
@@ -28,4 +30,11 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    // 로그인
+    @PostMapping("/authenticate")
+    public ResponseEntity<UserAuthenticationResponse> authenticate(
+            @Valid @RequestBody UserLoginRequestBody userLoginRequestBody) {
+        var response = userService.authenticate(userLoginRequestBody);
+        return ResponseEntity.ok(response);
+    }
 }
