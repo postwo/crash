@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,11 +25,6 @@ public class WebConfiguration {
     @Autowired
     private JwtExceptionFilter jwtExceptionFilter;
 
-    //빈을 사용하면 인스턴스를 여러 번 생성하는 대신, 스프링 컨테이너가 관리하는 싱글톤 빈을 재사용하게 되어 메모리 낭비를 줄일 수 있습니다
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     //CORS 설정: configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000"));는 http://localhost:3000과 http://127.0.0.1:3000에서 오는 요청을 허용합니다.
     //목적: 이렇게 설정하면, 이 두 페이지에서 http://localhost:8080 백엔드 서버에 접근하여 요청을 보낼 수 있게 됩니다
