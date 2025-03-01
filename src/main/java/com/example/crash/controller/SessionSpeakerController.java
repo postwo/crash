@@ -1,13 +1,13 @@
 package com.example.crash.controller;
 
 import com.example.crash.model.sessionspeaker.SessionSpeaker;
+import com.example.crash.model.sessionspeaker.SessionSpeakerPatchRequestBody;
+import com.example.crash.model.sessionspeaker.SessionSpeakerPostRequestBody;
 import com.example.crash.service.SessionSpeakerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,5 +30,27 @@ public class SessionSpeakerController {
     public ResponseEntity<SessionSpeaker> getSessionSpeakerBySpeakerId(@PathVariable Long speakerId) {
         var sessionSpeaker = sessionSpeakerService.getSessionSpeakerBySpeakerId(speakerId);
         return ResponseEntity.ok(sessionSpeaker);
+    }
+
+    @PostMapping
+    public ResponseEntity<SessionSpeaker> createSessionSpeaker(
+            @Valid @RequestBody SessionSpeakerPostRequestBody sessionSpeakerPostRequestBody) {
+        var sessionSpeaker = sessionSpeakerService.createSessionSpeaker(sessionSpeakerPostRequestBody);
+        return ResponseEntity.ok(sessionSpeaker);
+    }
+
+    @PatchMapping("/{speakerId}")
+    public ResponseEntity<SessionSpeaker> updateSessionSpeaker(
+            @PathVariable Long speakerId,
+            @RequestBody SessionSpeakerPatchRequestBody sessionSpeakerPatchRequestBody) {
+        var sessionSpeaker =
+                sessionSpeakerService.updateSessionSpeaker(speakerId, sessionSpeakerPatchRequestBody);
+        return ResponseEntity.ok(sessionSpeaker);
+    }
+
+    @DeleteMapping("/{speakerId}")
+    public ResponseEntity<Void> deleteSessionSpeaker(@PathVariable Long speakerId) {
+        sessionSpeakerService.deleteSessionSpeaker(speakerId);
+        return ResponseEntity.noContent().build();
     }
 }
