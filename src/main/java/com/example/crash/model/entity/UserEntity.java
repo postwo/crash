@@ -14,9 +14,10 @@ import java.util.Objects;
 
 @Entity
 @Table( //"user" 이렇게 작성하는 이유는 user는 데이터베이스에 예약어이기 때문에 이렇게 작성
-        name="\"user\"",
+        // Postgresql 에서 쿼리를 칠려고 user를 조회하면 계속 에약어 조회되기 때문에 users로 수정
+        name="\"users\"",
         indexes = { // username 을 자주 호출할거여서 이렇게 인덱스 생성 , 그리고 이렇게 유니크를 걸으므로 db에서 중복을 방지 가능
-                @Index(name="user_username_idx",columnList = "username" ,unique = true)
+                @Index(name="users_username_idx",columnList = "username" ,unique = true)
         }
 )
 @Setter
