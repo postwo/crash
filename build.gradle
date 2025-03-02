@@ -36,6 +36,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+	//더미 데이터를 위해 라이브러리 추가
+	implementation 'net.datafaker:datafaker:2.4.2'
 }
 
 tasks.named('test') {
