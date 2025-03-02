@@ -1,5 +1,6 @@
 package com.example.crash.config;
 
+import com.example.crash.model.user.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,6 +57,18 @@ public class WebConfiguration {
                                 requests
                                         .requestMatchers(HttpMethod.POST, "/api/*/users", "/api/*/users/authenticate")
                                         .permitAll() // 위 두군데 한해서만 모든 사용자가 사요할 수 있게 허용해준다는의미이다
+                                        .requestMatchers(HttpMethod.GET,
+                                                 "/api/*/session-speakers",
+                                                "/api/*/session-speakers/**",
+                                                "/api/*/crash-sessions",
+                                                "/api/*/crash-sessions/**")
+                                        .permitAll()
+                                        .requestMatchers(
+                                                "/api/*/session-speakers",
+                                                "/api/*/session-speakers/**",
+                                                "/api/*/crash-sessions",
+                                                "/api/*/crash-sessions/**")
+                                        .hasAuthority(Role.ADMIN.name())
                                         .anyRequest()
                                         .authenticated()
                                         )

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.ZonedDateTime;
@@ -67,9 +68,33 @@ public class UserEntity implements UserDetails {
     }
 
 
+    //로그인한 사용자의 권한을 조회하는 메서드
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+//        return List.of(
+//                //1번방식
+//                new SimpleGrantedAuthority(Role.USER.name()), //"USER" 문자열로 이렇게 들어간다 =이렇게 하면 hasAuthority 통과하는데 hasRole은 통과를 못한다
+//                new SimpleGrantedAuthority("ROLE_"+Role.USER.name()) // 이렇게 하면 hasRole을 통과 할 수 있다
+//
+//                //2번 방식
+//                new SimpleGrantedAuthority("ROLE_"+Role.ADMIN.name()),
+//                new SimpleGrantedAuthority("READ_AUTHORITY"),
+//                new SimpleGrantedAuthority("CREATE_AUTHORITY"),
+//                new SimpleGrantedAuthority("UPDATE_AUTHORITY"),
+//                new SimpleGrantedAuthority("DELETE_AUTHORITY")
+//
+//        );
+
+        if (this.role.equals(Role.ADMIN)){//어드민 유저
+            return
+                    List.of(new SimpleGrantedAuthority("ROLE_"+Role.ADMIN.name()),
+                            new SimpleGrantedAuthority(Role.ADMIN.name()),
+                            new SimpleGrantedAuthority("ROLE_"+Role.USER.name()),
+                            new SimpleGrantedAuthority(Role.USER.name()));
+        }else { // 일반유저
+            return List.of(new SimpleGrantedAuthority("ROLE_"+Role.USER.name()),
+                    new SimpleGrantedAuthority(Role.USER.name()));
+        }
     }
 
     @Override
